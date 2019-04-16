@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { TokenStorage } from '../shared/token.storage';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
   constructor(
       private route: ActivatedRoute,
       private router: Router,
-      private http: HttpClient
+      private http: HttpClient,
+      private tokenStorage: TokenStorage
   ) { }
 
   ngOnInit() {
@@ -23,23 +25,24 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    let url = '/api/login';
-    this.http.post<Observable<boolean>>(url, {
-      userName: this.model.username,
+    let url = 'api/auth';
+    this.http.post<Observable<any>>(url, {
+      username: this.model.username,
       password: this.model.password
-  }).subscribe(isValid => {
-      if (isValid) {
-          sessionStorage.setItem(
-            'token',
-            btoa(this.model.username + ':' + this.model.password)
-          );
-      this.router.navigate(['/user']);
-      } else {
-          alert("Authentication failed.")
+  }).subscribe(
+      (rsp) => {
+        console.log('token', rsp);
+        if (rsp.token) {
+        this.tokenStorage.saveToken(rsp.token);
+        this.router.navigate(['/home']);
+        }
+      },
+      (error) => {
+        alert("Authentication failed.")
       }
-  });
+  );
 }
-  }
+
 
 
 }

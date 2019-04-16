@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { TokenStorage } from '../shared/token.storage';
 
 @Component({
   selector: 'app-home',
@@ -9,8 +10,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class HomeComponent implements OnInit {
 
   userName: string;
+  email: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private tokenStorage: TokenStorage) { }
 
   ngOnInit() {
       let url = '/api/user';
@@ -21,14 +23,15 @@ export class HomeComponent implements OnInit {
       this.http.post(url,{}, options).
       subscribe(principal => {
           console.log('principal', principal);
-          this.userName = principal.name;
+          this.userName = principal.username;
+          this.email = principal.email;
       });
 
 
   }
 
   logout() {
-      sessionStorage.setItem('token', '');
+    this.tokenStorage.signOut();
   }
 
 }

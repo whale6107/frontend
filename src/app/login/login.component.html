@@ -4,7 +4,7 @@
       <input type="text"
         name="username" [(ngModel)]="model.username"
           #username="ngModel" required />
-      <div *ngIf="f.submitted
+      <div class="text-danger" *ngIf="f.submitted
         && !username.valid">Username is required</div>
   </div>
   <div [ngClass]="{ 'has-error': f.submitted && !password.valid }">
@@ -12,8 +12,8 @@
       <input type="password"
         name="password" [(ngModel)]="model.password"
           #password="ngModel" required />
-      <div *ngIf="f.submitted
-        && !password.valid">Password is required</div>
+      <div class="text-danger" *ngIf="f.submitted
+        && !password.valid" >Password is required</div>
   </div>
   <div>
       <button [disabled]="loading">Login</button>
